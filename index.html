@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>this tone</title>
+  </head>
+  <script>
+  var upperLimit = 37;
+  var lowerLimit = 1;
+  var tempHeight = 0;
+  var resultHeight = 0;
+  var isAutoPlay = false;
+  window.onload=function(){
+    init();
+  }
+  </script>
+  <body>
+    尝试锻炼后天绝对音高
+    <br/>
+    <table id="play_table">
+    </table>
+    <br/>
+    <span id="heightOffeset"></span>
+    <br/>
+    <br/>
+    <button onclick="up(1)"> up </button>
+    <button onclick="up(-1)"> down </button>
+    <input onchange="up(this.value)"/>
+    <br/>
+    <button onclick="checkHeight()"> check </button>
+    <button onclick="refresh()"> refresh </button>
+    <button onclick="isAutoPlay=!isAutoPlay"> toggleAutoPlay </button>
+    <br/>
+  </body>
+  <script>
+  function randomInteger(lower, upper) {
+    return lower + Math.floor(Math.random()*(upper + 1 - lower));
+  }
+  function init() {
+    tempHeight = randomInteger(lowerLimit, upperLimit);
+    //resultHeight = randomInteger(1, upperLimit);
+    resultHeight = 22; //first train step: A3
+    document.getElementById("play_table").innerHTML="";
+    display();
+  }
+  function checkStatusAndInit(){
+    if (tempHeight == 0 || resultHeight == 0) {
+      init();
+    }
+  }
+  function generateAudioElement(fileName) {
+    var str = "<p><audio controls=\"controls\" src=\"m_source/";
+    str += fileName;
+    str +=  ".wav\"";
+    if (isAutoPlay) {
+      str += "autoplay=\"autoplay\"";
+    }
+    str += "> </audio></p>";
+    return str;
+  }
+  function refresh(){
+    init();
+    display();
+  }
+  function up(offset){
+    tempHeight = tempHeight + parseInt(offset);
+    if (tempHeight < lowerLimit) {
+      tempHeight = lowerLimit;
+    }
+    if (tempHeight > upperLimit) {
+      tempHeight = upperLimit;
+    }
+    display();
+  }
+  function checkHeight() {
+    var str="";
+    if (tempHeight > resultHeight) {
+      str = "high";
+    } else if (tempHeight < resultHeight) {
+      str = "low";
+    } else {
+      str = "right";
+    }
+    document.getElementById("heightOffeset").innerHTML=str;
+  }
+  function clearOffsetSpan() {
+    document.getElementById("heightOffeset").innerHTML="";
+  }
+  function display() {
+    clearOffsetSpan();
+    document.getElementById("play_table").innerHTML=generateAudioElement(tempHeight);
+  }
+  </script>
+</html>
